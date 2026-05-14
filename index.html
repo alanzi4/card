@@ -1,230 +1,228 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>منصة إصدار رخصة ببجي المعتمدة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Orbitron:wght@900&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <style>
-        :root {
-            --gold: #ffcc00;
-            --gold-gradient: linear-gradient(90deg, #b8860b, #ffd700, #b8860b);
-            --dark-surface: #121212;
-        }
+<meta charset="UTF-8">
+<title>لوحة السيكورتي</title>
 
-        body {
-            background: #000;
-            color: #fff;
-            font-family: 'Tajawal', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-        }
+<style>
+body {
+  font-family: Arial;
+  text-align: center;
+  direction: rtl;
+  color: white;
+  transition: 0.5s;
+}
 
-        h1 { font-family: 'Orbitron'; color: var(--gold); font-size: 1.5rem; text-align: center; margin-bottom: 30px; }
+.box {
+  margin-top: 100px;
+  font-size: 35px;
+}
 
-        /* واجهة إدخال البيانات */
-        .form-panel {
-            background: var(--dark-surface);
-            width: 100%;
-            max-width: 400px;
-            padding: 25px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .input-warning {
-            background: rgba(255, 204, 0, 0.1);
-            border: 1px solid var(--gold);
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            color: var(--gold);
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .lang-selector { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; }
-        .lang-selector label { font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 13px; color: #aaa; margin-bottom: 5px; }
-        .input-group input {
-            width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #333;
-            background: #000; color: #fff; box-sizing: border-box; font-size: 15px; outline: none;
-        }
-        .input-group input:focus { border-color: var(--gold); }
-
-        #issue-btn {
-            width: 100%; padding: 18px; background: var(--gold-gradient); border: none; border-radius: 12px;
-            font-weight: 900; font-size: 18px; cursor: pointer; color: #000; margin-top: 10px;
-        }
-
-        /* نافذة المعالجة والبطاقة (Overlay) */
-        .processing-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 1000;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            padding: 20px; box-sizing: border-box;
-        }
-
-        .loader-text {
-            color: var(--gold); font-size: 18px; font-weight: 900; text-align: center; margin-bottom: 20px;
-        }
-
-        .countdown { font-family: 'Orbitron'; font-size: 40px; color: #fff; margin-bottom: 20px; }
-
-        .safety-msg {
-            color: #ff4444; font-size: 13px; text-align: center; font-weight: bold;
-            background: rgba(255, 68, 68, 0.1); padding: 10px; border-radius: 8px;
-        }
-
-        /* تصميم البطاقة المخفي (لغرض التصوير فقط) */
-        #capture-container {
-            position: absolute; left: -9999px; /* خارج الشاشة تماماً */
-        }
-
-        .card-frame {
-            background: #0a0a0a; width: 500px; height: 312px;
-            border-radius: 15px; border: 2px solid var(--gold);
-            position: relative; overflow: hidden;
-        }
-
-        .header-stripe { background: var(--gold-gradient); height: 45px; display: flex; align-items: center; justify-content: center; }
-        .header-stripe h2 { margin: 0; color: #000; font-weight: 900; font-size: 22px; }
-
-        .body-content { padding: 25px 35px; display: flex; justify-content: space-between; height: 210px; }
-        .data-section { width: 70%; }
-        .row-top { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255, 204, 0, 0.2); padding-bottom: 8px; margin-bottom: 15px; }
-        .item { margin-bottom: 12px; }
-        .item span { display: block; font-size: 10px; color: #777; font-weight: 700; }
-        .item strong { font-size: 18px; color: #fff; font-weight: 900; }
-
-        .bottom-seal {
-            position: absolute; bottom: 65px; left: 35px; width: 110px; height: 110px;
-            border: 4px double var(--gold); border-radius: 50%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: rgba(255, 204, 0, 0.05); transform: rotate(-15deg);
-        }
-
-        .warning-footer {
-            position: absolute; bottom: 0; width: 100%; background: rgba(255, 204, 0, 0.08);
-            padding: 8px 0; text-align: center; font-size: 10px; color: #ddd; border-top: 1px solid rgba(255, 204, 0, 0.2);
-        }
-    </style>
+.small {
+  font-size: 18px;
+  margin-top: 20px;
+}
+</style>
 </head>
+
 <body>
 
-    <h1>بطاقة لاعب معتمد</h1>
+<h1>🚨 لوحة المراقبة</h1>
 
-    <div class="form-panel">
-        <div class="input-warning">⚠️ ملاحظة: رقم الهوية هو ID حسابك في ببجي.</div>
-        
-        <div class="lang-selector">
-            <label><input type="radio" name="sealLang" value="ar"> لغة عربية</label>
-            <label><input type="radio" name="sealLang" value="en" checked> ENGLISH</label>
-        </div>
+<div class="box" id="status">جاري التحميل...</div>
+<div class="small" id="info"></div>
 
-        <div class="input-group"><label>الاسم الكامل</label><input type="text" id="iName" placeholder="أدخل اسمك"></div>
-        <div class="input-group"><label>تاريخ الإصدار</label><input type="text" id="iDate" placeholder="2026/05/14"></div>
-        <div class="input-group"><label>الجنسية</label><input type="text" id="iNat" placeholder="سعودي"></div>
-        <div class="input-group"><label>اسم المستخدم</label><input type="text" id="iUser" placeholder="أدخل اليوزر"></div>
-        <div class="input-group"><label>معرف الهوية (ID)</label><input type="text" id="iID" placeholder="ID ببجي"></div>
-        
-        <button id="issue-btn" onclick="startProcessing()">إصدار البطاقة</button>
-    </div>
+<script>
 
-    <div class="processing-overlay" id="overlay">
-        <div class="loader-text">جاري إصدار البطاقة...</div>
-        <div class="countdown" id="timer">10</div>
-        <div class="safety-msg">
-            ⚠️ يرجى الانتظار وعدم قفل الشاشة أو الخروج<br>لتجنب إلغاء عملية الإصدار
-        </div>
-    </div>
+// 🔥 نفس الرابط (مهم)
+const url = "https://firestore.googleapis.com/v1/projects/smart-parking-9c85f/databases/(default)/documents/reservations/A1";
 
-    <div id="capture-container">
-        <div class="card-frame" id="finalCard">
-            <div class="header-stripe"><h2>رخصة لاعب معتمد</h2></div>
-            <div class="body-content">
-                <div class="data-section">
-                    <div class="row-top">
-                        <div class="item"><span>الاسم / NAME</span><strong id="oName"></strong></div>
-                        <div class="item" style="text-align: left;"><span>التاريخ / DATE</span><strong id="oDate" style="color: var(--gold);"></strong></div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div class="item"><span>الجنسية</span><strong id="oNat"></strong></div>
-                        <div class="item"><span>اليوزر</span><strong id="oUser"></strong></div>
-                    </div>
-                    <div class="item" style="margin-top: 10px;"><span>معرف الهوية / ID</span><strong id="oID"></strong></div>
-                </div>
-                <div class="bottom-seal">
-                    <div id="sealText" style="text-align:center; font-weight:900;"></div>
-                    <div style="font-size: 8px; color: var(--gold); font-weight: 900; font-family:'Orbitron'; border-top:1px solid #444; margin-top:2px;">PUBG MOBILE</div>
-                </div>
-            </div>
-            <div class="warning-footer">⚠️ تنبيه: يرجى عدم الاقتراب أو التعرض لصاحب البطاقة. رخصة معتمدة</div>
-        </div>
-    </div>
+// 👇 مهم: نضيف قراءة الحساس من ESP
+// عشان السيكورتي يعرف هل فيه سيارة
 
-    <script>
-        function startProcessing() {
-            const name = document.getElementById('iName').value;
-            if(!name) { alert("يرجى إكمال البيانات!"); return; }
+let lastAlert = false;
 
-            // 1. نقل البيانات للبطاقة المخفية
-            document.getElementById('oName').innerText = name;
-            document.getElementById('oDate').innerText = document.getElementById('iDate').value;
-            document.getElementById('oNat').innerText = document.getElementById('iNat').value;
-            document.getElementById('oUser').innerText = document.getElementById('iUser').value;
-            document.getElementById('oID').innerText = document.getElementById('iID').value;
+function check() {
+  fetch(url)
+  .then(res => res.json())
+  .then(data => {
 
-            // 2. ضبط لغة الختم
-            const lang = document.querySelector('input[name="sealLang"]:checked').value;
-            const sealDiv = document.getElementById('sealText');
-            if(lang === 'ar') {
-                sealDiv.innerHTML = `<div style="font-size:10px; color:#fff;">اعتماد موثق</div>`;
-            } else {
-                sealDiv.innerHTML = `<div style="font-size:9px; color:#fff;">OFFICIAL VERIFIED</div>`;
-            }
+    if (!data.fields) return;
 
-            // 3. إظهار شاشة الانتظار وبدء العداد
-            document.getElementById('overlay').style.display = "flex";
-            let timeLeft = 10;
-            const timerElement = document.getElementById('timer');
-            
-            const countdown = setInterval(() => {
-                timeLeft--;
-                timerElement.innerText = timeLeft;
-                
-                if(timeLeft <= 0) {
-                    clearInterval(countdown);
-                    captureAndDownload();
-                }
-            }, 1000);
-        }
+    const active = data.fields.active.booleanValue;
 
-        function captureAndDownload() {
-            html2canvas(document.getElementById('finalCard'), { 
-                scale: 3, 
-                backgroundColor: "#000" 
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `PUBG_ID_Verified.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                
-                // إخفاء الشاشة وإعادة التصفير
-                document.getElementById('overlay').style.display = "none";
-                document.getElementById('timer').innerText = "10";
-                alert("تم إصدار البطاقة بنجاح! تفقد معرض الصور.");
-            });
-        }
-    </script>
+    // 👇 منطق العرض
+
+    // 🟢 محجوز
+    if (active) {
+      document.body.style.background = "green";
+      document.getElementById("status").innerHTML = "🟢 الموقف محجوز";
+      document.getElementById("info").innerHTML = "الوضع طبيعي";
+
+      lastAlert = false;
+    }
+
+    // ⚪ فاضي
+    else {
+      document.body.style.background = "black";
+      document.getElementById("status").innerHTML = "⚪ الموقف متاح";
+      document.getElementById("info").innerHTML = "لا يوجد حجز";
+
+      lastAlert = false;
+    }
+
+  });
+}
+
+setInterval(check, 2000);
+
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Parking</title>
+</head>
+<body style="text-align:center; font-family:Arial;">
+
+<h1>🚗 Smart Parking System</h1>
+
+<br>
+
+<a href="booking.html">
+  <button style="padding:15px; font-size:18px;">📱 حجز موقف</button>
+</a>
+
+<br><br>
+
+<a href="security.html">
+  <button style="padding:15px; font-size:18px;">🚨 صفحة السيكورتي</button>
+</a>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>حجز موقف</title>
+
+<style>
+body {
+  font-family: Arial;
+  text-align: center;
+  direction: rtl;
+  background: #f5f5f5;
+}
+
+button {
+  padding: 15px 25px;
+  font-size: 20px;
+  margin: 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.book {
+  background: green;
+  color: white;
+}
+
+.cancel {
+  background: red;
+  color: white;
+}
+
+.status {
+  margin-top: 20px;
+  font-size: 24px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🚗 نظام حجز المواقف</h1>
+
+<button class="book" onclick="reserve()">حجز موقف</button>
+<button class="cancel" onclick="cancel()">إلغاء الحجز</button>
+
+<div class="status" id="status">جاري التحميل...</div>
+
+<script>
+
+// 🔥 نفس الرابط المستخدم في ESP (مهم جدًا)
+const url = "https://firestore.googleapis.com/v1/projects/smart-parking-9c85f/databases/(default)/documents/reservations/A1";
+
+// 🟢 حجز
+function reserve() {
+  fetch(url + "?updateMask.fieldPaths=active", {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      fields: {
+        active: { booleanValue: true }
+      }
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("status").innerHTML = "✅ تم حجز الموقف";
+  })
+  .catch(err => {
+    console.log(err);
+    alert("❌ فشل الحجز");
+  });
+}
+
+// 🔴 إلغاء
+function cancel() {
+  fetch(url + "?updateMask.fieldPaths=active", {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      fields: {
+        active: { booleanValue: false }
+      }
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("status").innerHTML = "❌ تم إلغاء الحجز";
+  })
+  .catch(err => {
+    console.log(err);
+    alert("❌ فشل الإلغاء");
+  });
+}
+
+// 🔄 تحديث الحالة كل ثانيتين
+function checkStatus() {
+  fetch(url)
+  .then(res => res.json())
+  .then(data => {
+
+    if (!data.fields) return;
+
+    const active = data.fields.active.booleanValue;
+
+    if (active) {
+      document.getElementById("status").innerHTML = "🟢 الموقف محجوز";
+    } else {
+      document.getElementById("status").innerHTML = "⚪ الموقف متاح";
+    }
+
+  });
+}
+
+setInterval(checkStatus, 2000);
+
+</script>
+
 </body>
 </html>
